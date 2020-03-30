@@ -2,9 +2,11 @@ FROM golang:1.9
 
 COPY cmd/freegeoip/public /var/www
 
-ADD . /go/src/github.com/apilayer/freegeoip
+COPY GeoLite2-City.mmdb.gz /GeoLite2-City.mmdb.gz
+
+ADD . /go/src/github.com/apilayer/freegeoip-1
 RUN \
-	cd /go/src/github.com/apilayer/freegeoip/cmd/freegeoip && \
+	cd /go/src/github.com/apilayer/freegeoip-1/cmd/freegeoip && \
 	go get -d && go install && \
 	apt-get update && apt-get install -y libcap2-bin && \
 	setcap cap_net_bind_service=+ep /go/bin/freegeoip && \
@@ -15,6 +17,7 @@ USER freegeoip
 ENTRYPOINT ["/go/bin/freegeoip"]
 
 EXPOSE 8080
+
 
 # CMD instructions:
 # Add  "-use-x-forwarded-for"      if your server is behind a reverse proxy
